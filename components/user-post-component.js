@@ -27,7 +27,9 @@ export function renderUserPostsPageComponent({ appEl }) {
           <img class="post-image" src="${posts.imageUrl}">
         </div>
         <div class="post-likes">
-          <button data-post-id="${posts.id}" class="like-button">
+          <button data-post-id="${posts.id}" data-post-like=${
+            posts.isLiked
+          } class="like-button">
           ${
             posts.isLiked
               ? `<img src="./assets/images/like-active.svg">`
@@ -78,14 +80,12 @@ export function renderUserPostsPageComponent({ appEl }) {
             userId
           });
         });
-      } else if (isLiked) {
+      } else {
         postLikesRemove({ token, ID: id }).then(() => {
           return goToPage(USER_POSTS_PAGE, {
             userId
           });
         });
-      } else {
-        return;
       }
     });
   }

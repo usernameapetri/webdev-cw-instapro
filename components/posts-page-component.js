@@ -89,15 +89,15 @@ export function renderPostsPageComponent({ appEl }) {
       const isLiked = likeBtn.dataset.postLike === "true";
       const token = getToken();
       if (!isLiked) {
-        postLikesAdd({ token, ID: id }).then(() => {
-          return goToPage(POSTS_PAGE);
-        });
-      } else if (isLiked) {
-        postLikesRemove({ token, ID: id }).then(() => {
+        postLikesAdd({ token, ID: id }).then((response) => {
+          console.log("лайк" + response);
           return goToPage(POSTS_PAGE);
         });
       } else {
-        return;
+        postLikesRemove({ token, ID: id }).then((response) => {
+          console.log("дизлайк" + response);
+          return goToPage(POSTS_PAGE);
+        });
       }
     });
   }
