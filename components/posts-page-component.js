@@ -1,10 +1,9 @@
 import { USER_POSTS_PAGE, POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, getToken } from "../index.js";
 import { formatDistanceToNow } from "date-fns";
 import { el, id, ru } from "date-fns/locale";
 import { postLikesAdd, postLikesRemove } from "../api.js";
-import { getToken } from "../index.js";
 export const displayLikes = (likes) => {
   const numberOfLikes = likes.length;
 
@@ -84,26 +83,22 @@ export function renderPostsPageComponent({ appEl }) {
     });
   }
 
-  document.querySelectorAll(".like-button").forEach((likeBtn) => {
-    likeBtn.addEventListener("click", async () => {
+  for (let likeBtn of document.querySelectorAll(".like-button")) {
+    likeBtn.addEventListener("click", () => {
       const id = likeBtn.dataset.postId;
       const isLiked = likeBtn.dataset.postLike === "true";
-      try {
-        const token = getToken();
-
-        if (isLiked) {
-          await postLikesRemove({ token, ID: id }).then(() => {
-            goToPage(POSTS_PAGE);
-          });
-        } else {
-          await postLikesAdd({ token, ID: id }).then(() => {
-            goToPage(POSTS_PAGE);
-          });
-        }
-        goToPage(undefined, "like");
-      } catch (error) {
-        console.error("Произошла ошибка:", error);
+      const token = getToken();
+      if (!isLiked) {
+        postLikesAdd({ token, ID: id }).then(() => {
+          return goToPage(POSTS_PAGE);
+        });
+      } else if (isLiked) {
+        postLikesRemove({ token, ID: id }).then(() => {
+          return goToPage(POSTS_PAGE);
+        });
+      } else {
+        return;
       }
     });
-  });
+  }
 }

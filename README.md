@@ -12,4 +12,4 @@ https://usernameapetri.github.io/webdev-cw-instapro/
 
 ## Фактически затраченное время
 
-32 часов
+35 часов

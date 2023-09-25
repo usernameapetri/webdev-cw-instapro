@@ -62,7 +62,7 @@ export const goToPage = (newPage, data) => {
           renderApp();
         })
         .catch((error) => {
-          console.error(error);
+          alert(error.message);
           goToPage(POSTS_PAGE);
         });
     }
@@ -71,8 +71,8 @@ export const goToPage = (newPage, data) => {
       // TODO: реализовать получение постов юзера из API
       page = LOADING_PAGE;
       renderApp();
-      console.log("Открываю страницу пользователя: ", data.userId);
       const userId = data.userId;
+      // console.log("Открываю страницу пользователя: ", data.userId);
       return getUserPosts({ userId, token: getToken() })
         .then((newPosts) => {
           page = USER_POSTS_PAGE;

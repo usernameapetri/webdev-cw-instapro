@@ -1,8 +1,10 @@
+import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts } from "../index.js";
+import { posts, getToken, goToPage } from "../index.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 import { displayLikes } from "./posts-page-component.js";
+import { postLikesAdd, postLikesRemove } from "../api.js";
 
 export function renderUserPostsPageComponent({ appEl }) {
   const userPostsHtml = posts
@@ -11,6 +13,7 @@ export function renderUserPostsPageComponent({ appEl }) {
         addSuffix: true,
         locale: ru
       });
+
       return `
     <ul class="posts">
       <li class="post">
@@ -60,4 +63,30 @@ export function renderUserPostsPageComponent({ appEl }) {
   renderHeaderComponent({
     element: document.querySelector(".header-container")
   });
+
+  const userEl = document.querySelector(".post-header");
+
+  for (let likeBtn of document.querySelectorAll(".like-button")) {
+    likeBtn.addEventListener("click", () => {
+      const userId = userEl.dataset.userId;
+      const id = likeBtn.dataset.postId;
+      const isLiked = likeBtn.dataset.postLike === "true";
+      const token = getToken();
+      if (!isLiked) {
+        postLikesAdd({ token, ID: id }).then(() => {
+          return goToPage(USER_POSTS_PAGE, {
+            userId
+          });
+        });
+      } else if (isLiked) {
+        postLikesRemove({ token, ID: id }).then(() => {
+          return goToPage(USER_POSTS_PAGE, {
+            userId
+          });
+        });
+      } else {
+        return;
+      }
+    });
+  }
 }
